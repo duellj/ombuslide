@@ -1,0 +1,229 @@
+<?php
+/**
+ * @file
+ * Code for the Ombuslide feature.
+ */
+
+include_once('ombuslide.features.inc');
+
+
+/**
+ * Implements hook_bean_types_api_info().
+ */
+function ombuslide_bean_types_api_info() {
+  return array(
+    'api' => bean_current_version(),
+  );
+}
+
+/**
+ * Implements hook_bean_types().
+ */
+function ombuslide_bean_types() {
+  $plugins = array();
+  $plugin_path = drupal_get_path('module', 'ombuslide');
+
+  $plugins['ombuslide'] = array(
+    'name' => 'ombuslide',
+    'label' => t('Slideshow'),
+    'handler' => array(
+      'class' => 'ombuslide_bean',
+      'parent' => 'bean_default',
+      'path' => $plugin_path,
+      'file' => 'ombuslide.bean.inc',
+    ),
+    'editable' => TRUE,
+  );
+  return $plugins;
+}
+
+/**
+ * Implements hook_theme()
+ */
+function ombuslide_theme($existing, $type, $theme, $path) {
+  return array(
+    'ombuslide_collection' => array(
+      'variables' => array('items' => NULL, 'use_pager' => TRUE),
+    ),
+  );
+}
+
+/**
+ * Implements hook_contextual_links_view_alter().
+ * Customize our contextual links as per our display settings.
+ *
+ * (contextual.module should probably provide a better way of adding/customizing
+ * these links - currently it's very tied to the menu system).
+ */
+function field_collection_contextual_links_view_alter(&$element, &$items) {
+  // We only want our own contextual links
+  if (isset($element['#element']['#field']['type']) && $element['#element']['#field']['type'] === 'field_collection') {
+
+    if (!empty($element['#element']['#display']['settings']) && !empty($element['#links'])) {
+
+      $display_settings = $element['#element']['#display']['settings'];
+
+      foreach ($element['#links'] as $key => $link) {
+
+        // The keys of the links have the form: MODULENAME-LASTPATHSEGMENT
+        // @see menu_contextual_links() in menu.inc and
+        // @see contextual_pre_render_links() in contextual.module.
+        if (strpos($key, 'field-collection-') === 0) {
+          $op = substr($key, strlen('field-collection-'));
+          if (isset($display_settings[$op])) {
+
+            // Empty string indicates user does not want the link at all
+            if ($display_settings[$op] === '') {
+              unset($element['#links'][$key]);
+            }
+            // Otherwise just override the title with the setting
+            else {
+              $element['#links'][$key]['title'] = $display_settings[$op];
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function ombuslide_field_formatter_info() {
+  return array(
+    'ombuslide_collection' => array(
+      'label' => t('Slideshow'),
+      'field types' => array('field_collection'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function ombuslide_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  switch ($display['type']) {
+    case 'ombuslide_collection':
+
+      $list_items = array();
+      foreach ($items as $delta => $item) {
+        if ($field_collection = field_collection_field_get_entity($item)) {
+          // Useful data for those interested in altering
+          $list_item = array();
+          $list_item['entity'] = $field_collection->view();
+          $list_item['#entity_type'] = $entity_type;
+          $list_item['#field'] = &$field;
+          $list_item['#instance'] = &$instance;
+          $list_item['#display'] = &$display;
+          $list_item['#field_collection_item'] = $field_collection;
+          $list_item['#theme_wrappers'] = array('field_collection_view');
+          $list_item['#attributes']['class'][] = 'field-collection-view';
+
+          // Add admin links for each item as contextual links.
+          $list_item['contextual_links'] = array(
+            '#type' => 'contextual_links',
+            '#contextual_links' => array(
+              'field_collection' => array(field_collection_field_get_path($field_collection->fieldInfo()), array($field_collection->item_id)),
+            ),
+            '#element' => $list_item,
+          );
+          $list_item['#attributes']['class'][] = 'contextual-links-region';
+          $list_items[] = array(
+            'data' => drupal_render($list_item),
+            'class' => array('item-' . $delta),
+          );
+        }
+      }
+      $element = array(
+        '#theme' => 'ombuslide_collection',
+        '#items' => $list_items,
+        '#use_pager' => TRUE,
+      );
+      break;
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function ombuslide_menu_alter(&$items) {
+  $field = field_info_field('field_slide');
+  $path = field_collection_field_get_path($field);
+
+  $items[$path . '/add/%/%']['_tab'] = TRUE;
+  $items[$path . '/add/%/%']['tab_root'] = 'block';
+  $items[$path . '/add/%/%']['tab_parent'] = 'block';
+  $items[$path . '/add/%/%']['context'] = MENU_CONTEXT_INLINE;
+  $items[$path . '/add/%/%']['title'] = 'Add Slide';
+  $items[$path . '/add/%/%']['page callback'] = 'ombuslide_item_add';
+}
+
+/**
+ * Implements hook_block_view_alter().
+ */
+function ombuslide_block_view_alter(&$data, $block) {
+  // Add "add" link to block contextual links.
+  if ($block->module == 'bean' && isset($data['content']) && is_array($data['content']) && array_key_exists('bean', $data['content'])) {
+    foreach ($data['content']['bean'] as $id => $bean) {
+      if ($bean['#bundle'] == 'ombuslide') {
+        $field = field_info_field('field_slide');
+        $path = field_collection_field_get_path($field);
+        $data['content']['#contextual_links']['field_collection'] = array($path . '/add', array('bean', $id));
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function ombuslide_form_bean_form_alter(&$form, $form_state) {
+  // provide a simpler form for ordering and editing slides.
+  if ($form['#bundle'] == 'ombuslide') {
+    $path = drupal_get_path('module', 'ombuslide');
+    drupal_add_js($path . '/js/ombuslide.admin.js');
+    drupal_add_css($path . '/ombuslide.admin.css');
+    $form['#submit'][] = 'ombuslide_form_bean_form_submit';
+  }
+}
+
+/**
+ * Submit callback for ombuslide form to redirect.
+ */
+function ombuslide_form_bean_form_submit($form, &$form_state) {
+  if (isset($_GET['destination'])) {
+    $destination = drupal_get_destination();
+    $form_state['redirect'] = $destination['destination'];
+  }
+}
+
+/**
+ * Theme callback.
+ *
+ * Themes a field collection as a ombuslide.
+ */
+function theme_ombuslide_collection($variables) {
+  $items     = $variables['items'];
+  $use_pager = $variables['use_pager'];
+
+  $output = '';
+
+  $output .= theme('item_list', array('items' => $items, 'attributes' => array('class' => array('slides'))));
+
+  // Add unique id.
+  $id = drupal_html_id('ombuslide');
+  $output = '<div id="' . $id . '" class="ombuslide">' . $output . '</div><div class="clearfix"></div>';
+
+  // Add js
+  $path = drupal_get_path('module', 'ombuslide') . '/js';
+  drupal_add_js($path . '/jquery.cycle.all.js');
+  drupal_add_js($path . '/ombuslide.js');
+  drupal_add_js(array('ombuslide' => array($id => array())), 'setting');
+
+  return $output;
+}

@@ -213,6 +213,12 @@ function theme_ombuslide_collection($variables) {
 
   $output = '';
 
+  $items = array();
+  foreach ($variables['items'] as $item) {
+    $item['data'] = drupal_render($item['data']);
+    $items[] = $item;
+  }
+
   $output .= theme('item_list', array('items' => $items, 'attributes' => array('class' => array('slides'))));
 
   // Add unique id.

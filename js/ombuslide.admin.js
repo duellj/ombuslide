@@ -54,30 +54,12 @@
 
     html.find(".edit").click(function() {
       $form.show();
+      $('iframe', $form).height(100);
       $(this).parents('td.overview').remove();
       return false;
     });
 
-    html.find(".delete").click(function() {
-      // Handle the special case of wysiwyg editors by detaching the wysiwyg.
-      $('textarea', $form).each(function() {
-        if (Drupal.wysiwyg.instances[this.id]) {
-          var params = {field: this.id};
-          Drupal.wysiwygDetach($form, params);
-        }
-      });
-
-      // Field collection will delete any collection where all fields are empty,
-      // so clearing all form values will trigger a deletion.
-      $(':input', $form).not(':button, :submit').val('').removeAttr('checked').removeAttr('selected');
-
-      // Handle the special case of field_image display hidden field, which 
-      // needs to be set in order for the form to process correctly.
-      $("input[name$='\\[field_image\\]\\[und\\]\\[0]\\[display\\]']", $form).val(1);
-
-      Drupal.ombuslideAdmin.triggerChange();
-      return false;
-    });
+    $('input[value="Remove"]:last', $form).appendTo($('.form-actions', html));
 
     return html;
   };
@@ -105,7 +87,8 @@
       html += $(".field-name-field-slide-title input", $form).val();
     }
     html += '</div>';
-    html += '<div class="overview-column form-actions form-wrapper"><input type="button" class="form-submit edit" value="Edit" /><input type="button" class="form-submit delete" value="Delete" /></div>';
+    html += '<div class="overview-column form-actions form-wrapper"><input type="button" class="form-submit edit" value="Edit" />';
+    html += '</div>';
     html += '</td>';
     return html;
   }

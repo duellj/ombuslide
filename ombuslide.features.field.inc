@@ -326,85 +326,10 @@ function ombuslide_field_default_fields() {
     ),
   );
 
-  // Exported field: 'field_collection_item-field_slide-field_video'
-  $fields['field_collection_item-field_slide-field_video'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_video',
-      'foreign keys' => array(),
-      'indexes' => array(),
-      'module' => 'video_embed_field',
-      'settings' => array(),
-      'translatable' => '0',
-      'type' => 'video_embed_field',
-    ),
-    'field_instance' => array(
-      'bundle' => 'field_slide',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => 'Copy the share link for the video you wish to link to (<a href="http://www.google.com/support/youtube/bin/answer.py?hl=en&answer=57741" target="_blank">Click here</a> for help).',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'stand_base',
-          'settings' => array(),
-          'type' => 'stand_base_field_formatter_video_colorbox',
-          'weight' => '4',
-        ),
-      ),
-      'entity_type' => 'field_collection_item',
-      'field_name' => 'field_video',
-      'label' => 'Video',
-      'required' => 0,
-      'settings' => array(
-        'allowed_types' => array(
-          0 => 'youtube',
-          1 => 'vimeo',
-        ),
-        'description_field' => 0,
-        'playback_settings' => array(
-          'Vimeo' => array(
-            'autoplay' => 0,
-            'color' => '00adef',
-            'height' => '315',
-            'teaser_height' => '315',
-            'teaser_width' => '560',
-            'width' => '560',
-          ),
-          'Youtube' => array(
-            'autohide' => '2',
-            'autoplay' => 0,
-            'hd' => 1,
-            'height' => '349',
-            'rel' => 0,
-            'showinfo' => 1,
-            'teaser_height' => '349',
-            'teaser_width' => '560',
-            'theme' => 'dark',
-            'width' => '560',
-          ),
-          'instance__settings__playback_settings__active_tab' => 'edit-instance-settings-playback-settings-vimeo',
-        ),
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 0,
-        'module' => 'video_embed_field',
-        'settings' => array(),
-        'type' => 'video_embed_field_widget',
-        'weight' => '5',
-      ),
-    ),
-  );
-
   // Translatables
   // Included for use with string extractors like potx.
   t('A call to action link to an internal or external URL.');
   t('Content');
-  t('Copy the share link for the video you wish to link to (<a href="http://www.google.com/support/youtube/bin/answer.py?hl=en&answer=57741" target="_blank">Click here</a> for help).');
   t('Define the content for each slide in the slideshow.  Drag and drop the slides to order them within the slideshow.');
   t('Image');
   t('Link');
@@ -412,7 +337,6 @@ function ombuslide_field_default_fields() {
   t('Optional title text for the image.');
   t('Slides');
   t('Title');
-  t('Video');
 
   return $fields;
 }

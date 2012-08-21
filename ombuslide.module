@@ -27,10 +27,10 @@ function ombuslide_bean_types() {
     'name' => 'ombuslide',
     'label' => t('Slideshow'),
     'handler' => array(
-      'class' => 'ombuslide_bean',
-      'parent' => 'bean_default',
-      'path' => $plugin_path,
-      'file' => 'ombuslide.bean.inc',
+      'class' => 'OmbuslideBean',
+      'parent' => 'BeanPlugin',
+      'path' => $plugin_path . '/includes',
+      'file' => 'OmbuslideBean.php',
     ),
     'editable' => TRUE,
   );
@@ -132,7 +132,7 @@ function ombuslide_field_formatter_view($entity_type, $entity, $field, $instance
           );
           $list_item['#attributes']['class'][] = 'contextual-links-region';
           $list_items[] = array(
-            'data' => drupal_render($list_item),
+            'data' => $list_item,
             'class' => array('item-' . $delta),
           );
         }

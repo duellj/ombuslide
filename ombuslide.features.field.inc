@@ -5,12 +5,12 @@
  */
 
 /**
- * Implementation of hook_field_default_fields().
+ * Implements hook_field_default_fields().
  */
 function ombuslide_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'bean-ombuslide-field_slide'
+  // Exported field: 'bean-ombuslide-field_slide'.
   $fields['bean-ombuslide-field_slide'] = array(
     'field_config' => array(
       'active' => '1',
@@ -20,6 +20,7 @@ function ombuslide_field_default_fields() {
       'field_name' => 'field_slide',
       'foreign keys' => array(),
       'indexes' => array(),
+      'locked' => '0',
       'module' => 'field_collection',
       'settings' => array(
         'path' => '',
@@ -58,7 +59,7 @@ function ombuslide_field_default_fields() {
     ),
   );
 
-  // Exported field: 'field_collection_item-field_slide-field_image'
+  // Exported field: 'field_collection_item-field_slide-field_image'.
   $fields['field_collection_item-field_slide-field_image'] = array(
     'field_config' => array(
       'active' => '1',
@@ -79,6 +80,7 @@ function ombuslide_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'image',
       'settings' => array(
         'default_image' => 0,
@@ -93,14 +95,14 @@ function ombuslide_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'image',
           'settings' => array(
             'image_link' => '',
             'image_style' => '',
           ),
           'type' => 'image',
-          'weight' => '0',
+          'weight' => '2',
         ),
       ),
       'entity_type' => 'field_collection_item',
@@ -109,6 +111,7 @@ function ombuslide_field_default_fields() {
       'required' => 0,
       'settings' => array(
         'alt_field' => 0,
+        'default_image' => 0,
         'file_directory' => 'slide',
         'file_extensions' => 'png gif jpg jpeg',
         'max_filesize' => '',
@@ -130,81 +133,7 @@ function ombuslide_field_default_fields() {
     ),
   );
 
-  // Exported field: 'field_collection_item-field_slide-field_link'
-  $fields['field_collection_item-field_slide-field_link'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_link',
-      'foreign keys' => array(),
-      'indexes' => array(),
-      'module' => 'link',
-      'settings' => array(
-        'attributes' => array(
-          'class' => '',
-          'rel' => '',
-          'target' => 'default',
-        ),
-        'display' => array(
-          'url_cutoff' => 80,
-        ),
-        'enable_tokens' => 1,
-        'title' => 'optional',
-        'title_value' => '',
-        'url' => 0,
-      ),
-      'translatable' => '0',
-      'type' => 'link_field',
-    ),
-    'field_instance' => array(
-      'bundle' => 'field_slide',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => 'A call to action link to an internal or external URL.',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'link',
-          'settings' => array(),
-          'type' => 'link_default',
-          'weight' => '3',
-        ),
-      ),
-      'entity_type' => 'field_collection_item',
-      'field_name' => 'field_link',
-      'label' => 'Link',
-      'required' => 0,
-      'settings' => array(
-        'attributes' => array(
-          'class' => '',
-          'configurable_title' => 0,
-          'rel' => '',
-          'target' => 'default',
-          'title' => '',
-        ),
-        'display' => array(
-          'url_cutoff' => '80',
-        ),
-        'enable_tokens' => 1,
-        'title' => 'optional',
-        'title_value' => '',
-        'url' => 0,
-        'user_register_form' => FALSE,
-        'validate_url' => 1,
-      ),
-      'widget' => array(
-        'active' => 0,
-        'module' => 'link',
-        'settings' => array(),
-        'type' => 'link_field',
-        'weight' => '4',
-      ),
-    ),
-  );
-
-  // Exported field: 'field_collection_item-field_slide-field_slide_text'
+  // Exported field: 'field_collection_item-field_slide-field_slide_text'.
   $fields['field_collection_item-field_slide-field_slide_text'] = array(
     'field_config' => array(
       'active' => '1',
@@ -225,6 +154,7 @@ function ombuslide_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
@@ -237,11 +167,11 @@ function ombuslide_field_default_fields() {
       'description' => 'Optional content text for the image.  Since there is limited space for the slideshow, it is best to keep this as short as possible.',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '2',
+          'weight' => '1',
         ),
       ),
       'entity_type' => 'field_collection_item',
@@ -264,7 +194,7 @@ function ombuslide_field_default_fields() {
     ),
   );
 
-  // Exported field: 'field_collection_item-field_slide-field_slide_title'
+  // Exported field: 'field_collection_item-field_slide-field_slide_title'.
   $fields['field_collection_item-field_slide-field_slide_title'] = array(
     'field_config' => array(
       'active' => '1',
@@ -285,6 +215,7 @@ function ombuslide_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '255',
@@ -299,11 +230,11 @@ function ombuslide_field_default_fields() {
       'description' => 'Optional title text for the image.',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '1',
+          'weight' => '0',
         ),
       ),
       'entity_type' => 'field_collection_item',
@@ -328,11 +259,9 @@ function ombuslide_field_default_fields() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('A call to action link to an internal or external URL.');
   t('Content');
   t('Define the content for each slide in the slideshow.  Drag and drop the slides to order them within the slideshow.');
   t('Image');
-  t('Link');
   t('Optional content text for the image.  Since there is limited space for the slideshow, it is best to keep this as short as possible.');
   t('Optional title text for the image.');
   t('Slides');
